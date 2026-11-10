@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}LandVerify | Transparent record integrity{% endblock %}
+{% block content %}
+<section class="hero">
+  <div>
+    <p class="eyebrow">LANDVERIFY</p>
+    <h1>Check a land document.</h1>
+    <p class="hero-copy">Save an original document, then check another copy to see if it is the same.</p>
+    <div class="actions"><a class="button" href="{{ url_for('verify') }}">Check your document</a><a class="button secondary" href="{{ url_for('login') }}">Sign in</a><a class="button secondary" href="{{ url_for('help_page') }}">Get help</a></div>
+  </div>
+  <div class="hero-card">
+    <div class="pulse"></div>
+    <strong>Simple answer</strong>
+    <span>Same document or different document</span>
+  </div>
+</section>
+<section class="grid three">
+  <article class="card"><span class="icon">01</span><h3>Save the original</h3><p>Add the document you trust and get a record number.</p></article>
+  <article class="card"><span class="icon">02</span><h3>Check a copy</h3><p>Upload the copy you want to check. A record number is optional.</p></article>
+  <article class="card"><span class="icon">03</span><h3>Get an answer</h3><p>See whether the document matches the saved copy.</p></article>
+</section>
+<div class="notice">A different copy should be checked with the issuing office before making an important decision.</div>
+{% endblock %}

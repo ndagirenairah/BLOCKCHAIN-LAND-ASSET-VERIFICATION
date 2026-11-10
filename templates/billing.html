@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}My plan | LandVerify{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">MY PLAN</p><h1>Manage your plan</h1><p class="muted">Basic document matching remains free.</p></div><a class="button secondary" href="{{ url_for('pricing') }}">View plans</a></div>
+{% if subscription %}<div class="card current-plan"><strong>Current selection: {{ subscription.plan_code|replace('_', ' ')|title }}</strong><span>{{ subscription.status|replace('_', ' ')|title }}</span></div>{% endif %}
+<div class="grid plans">
+{% for plan in plans %}<article class="card plan-card"><p class="eyebrow">{{ plan.name|upper }}</p><h2>{{ plan.price }}</h2><p>{{ plan.description }}</p><form method="post"><input type="hidden" name="_csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="plan_code" value="{{ plan.code }}"><button class="button secondary">{% if plan.code == 'FREE' %}Use free plan{% else %}Choose plan{% endif %}</button></form></article>{% endfor %}
+</div>
+{% endblock %}

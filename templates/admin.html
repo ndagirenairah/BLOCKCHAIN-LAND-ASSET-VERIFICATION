@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}Admin | LandVerify{% endblock %}
+{% block content %}
+<p class="eyebrow">ADMINISTRATION</p><h1>Access and audit</h1>
+<h2>Users</h2><div class="table-wrap"><table><thead><tr><th>Username</th><th>Role</th><th>Status</th><th></th></tr></thead><tbody>{% for user in users %}<tr><td>{{ user.username }}</td><td>{{ user.role }}</td><td>{{ user.status }}</td><td>{% if user.id != current_user.id %}<form method="post" action="{{ url_for('toggle_user', user_id=user.id) }}"><input type="hidden" name="_csrf_token" value="{{ csrf_token() }}"><button class="link-button">{{ 'Disable' if user.status == 'active' else 'Enable' }}</button></form>{% endif %}</td></tr>{% endfor %}</tbody></table></div>
+<h2>Recent security events</h2><div class="table-wrap"><table><thead><tr><th>Time</th><th>Actor</th><th>Action</th><th>Outcome</th></tr></thead><tbody>{% for log in logs %}<tr><td>{{ log.timestamp }}</td><td>{{ log.username or 'anonymous' }}</td><td>{{ log.action }}</td><td>{{ log.outcome }}</td></tr>{% endfor %}</tbody></table></div>
+{% endblock %}

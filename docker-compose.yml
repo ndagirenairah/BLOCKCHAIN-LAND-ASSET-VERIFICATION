@@ -1,0 +1,38 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: landverify
+      POSTGRES_USER: landverify
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U landverify -d landverify"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    restart: unless-stopped
+
+  app:
+    build: .
+    environment:
+      APP_ENV: production
+      SECRET_KEY: ${SECRET_KEY:?Set SECRET_KEY in .env}
+      DATABASE: postgresql://landverify:${POSTGRES_PASSWORD}@db:5432/landverify
+      UPLOAD_DIR: /app/private_uploads
+      HOST: 0.0.0.0
+      PORT: 8000
+      AUTO_APPROVE_RECORDS: ${AUTO_APPROVE_RECORDS:-true}
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - uploads:/app/private_uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  uploads:

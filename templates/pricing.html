@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Plans | LandVerify{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">PLANS</p><h1>Choose a plan</h1><p class="muted">Start free. Upgrade when you need more records and reports.</p></div>{% if current_user %}<a class="button" href="{{ url_for('billing') }}">Manage my plan</a>{% else %}<a class="button" href="{{ url_for('register_account') }}">Create an account</a>{% endif %}</div>
+<div class="grid plans">
+{% for plan in plans %}<article class="card plan-card"><p class="eyebrow">{{ plan.name|upper }}</p><h2>{{ plan.price }}</h2><p>{{ plan.description }}</p>{% if current_user %}<a class="button secondary" href="{{ url_for('billing') }}">Choose plan</a>{% else %}<a class="button secondary" href="{{ url_for('register_account') }}">Get started</a>{% endif %}</article>{% endfor %}
+</div>
+{% endblock %}

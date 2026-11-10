@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}{{ record.public_reference }} | LandVerify{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">RECORD</p><h1>{{ record.public_reference }}</h1></div><span class="status {{ record.status|lower }}">{{ record.status|replace('_', ' ') }}</span></div>
+<section class="card"><h3>Record details</h3><dl><dt>Type</dt><dd>{{ record.asset_type }}</dd><dt>Area</dt><dd>{{ record.area_label }}</dd><dt>Added by</dt><dd>{{ record.submitter }}</dd><dt>Date added</dt><dd>{{ record.created_at[:10] }}</dd></dl></section>
+{% if current_user.role in ['reviewer','administrator'] and record.status == 'PENDING_REVIEW' %}<section class="card review"><h3>Review this record</h3><form method="post" action="{{ url_for('review_record', record_id=record.id) }}"><input type="hidden" name="_csrf_token" value="{{ csrf_token() }}"><textarea name="reason" placeholder="Add a reason for declining or flagging"></textarea><div class="actions"><button name="decision" value="approve" class="button">Approve</button><button name="decision" value="flag" class="button secondary">Flag</button><button name="decision" value="reject" class="button danger">Decline</button></div></form></section>{% endif %}
+{% endblock %}

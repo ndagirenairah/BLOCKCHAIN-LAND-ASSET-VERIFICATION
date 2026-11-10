@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Register record | LandVerify{% endblock %}
+{% block content %}
+<div class="narrow"><p class="eyebrow">ADD A RECORD</p><h1>Save an original document</h1><p class="muted">Only upload a document you are allowed to use.</p>
+<form method="post" enctype="multipart/form-data" class="card form">
+<input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+<label>Document type<input name="asset_type" placeholder="e.g. Land" required></label>
+<label>Location<input name="area_label" placeholder="e.g. Kampala" required></label>
+<label>Document file (up to 10 MB)<input name="document" type="file" accept=".pdf,.png,.jpg,.jpeg,.txt" required></label>
+<button class="button">Save document</button>
+</form></div>
+{% endblock %}

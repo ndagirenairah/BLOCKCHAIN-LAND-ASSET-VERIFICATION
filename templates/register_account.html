@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Create account | LandVerify{% endblock %}
+{% block content %}
+<div class="narrow"><p class="eyebrow">ACCOUNT REGISTRATION</p><h1>Create a submitter account</h1><p class="muted">Self-registration creates a submitter account. Reviewer, verifier, and administrator access must be provisioned by your organization.</p>
+  <form method="post" class="card form">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+    <label>Username<input name="username" required minlength="3" maxlength="80" autocomplete="username"></label>
+    <label>Password<input name="password" type="password" required minlength="14" autocomplete="new-password"></label>
+    <label>Confirm password<input name="password_confirmation" type="password" required minlength="14" autocomplete="new-password"></label>
+    <button class="button">Create account</button>
+  </form>
+</div>
+{% endblock %}

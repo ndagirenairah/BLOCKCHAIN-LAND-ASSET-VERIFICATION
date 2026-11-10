@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Get help | LandVerify{% endblock %}
+{% block content %}
+<div class="narrow wide">
+  <p class="eyebrow">GET HELP</p>
+  <h1>New to LandVerify?</h1>
+  <p class="muted">Follow these simple steps to check a document.</p>
+  <section class="grid help-steps">
+    <article class="card"><span class="icon">01</span><h2>Create an account</h2><p>Select <strong>Sign in</strong>, then choose <strong>Create an account</strong>. Enter a username and password.</p></article>
+    <article class="card"><span class="icon">02</span><h2>Save the trusted document</h2><p>Sign in and select <strong>Add a record</strong>. Choose the original document you trust and save it.</p></article>
+    <article class="card"><span class="icon">03</span><h2>Check a document</h2><p>Select <strong>Check your document</strong>, upload the file, and select <strong>Check document</strong>. The record number is optional.</p></article>
+    <article class="card"><span class="icon">04</span><h2>Read the answer</h2><p>Green means <strong>REAL DOCUMENT</strong>. Red means <strong>FAKE DOCUMENT</strong> because it does not match the saved copy.</p></article>
+  </section>
+  <section class="card help-note">
+    <h2>Something went wrong?</h2>
+    <ul>
+      <li>Choose the document again if the page asks you to refresh.</li>
+      <li>Use PDF, PNG, JPG, JPEG, or TXT files smaller than 10 MB.</li>
+      <li>If you do not have a saved original, the document may show as fake.</li>
+      <li>A matching file confirms it matches the saved copy; it does not by itself prove ownership or legal rights.</li>
+    </ul>
+  </section>
+  <div class="actions"><a class="button" href="{{ url_for('verify') }}">Check your document</a><a class="button secondary" href="{{ url_for('home') }}">Back to home</a></div>
+</div>
+{% endblock %}

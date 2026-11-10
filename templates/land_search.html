@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Land search | LandVerify{% endblock %}
+{% block content %}
+<div class="narrow wide">
+  <p class="eyebrow">LAND SEARCH</p>
+  <h1>Search land details</h1>
+  <p class="muted">Enter title or parcel details for a preliminary search request.</p>
+  <form method="post" class="card form">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+    <label>Search type
+      <select name="search_type" required>
+        <option value="TITLE">Title search — volume and folio</option>
+        <option value="PARCEL">Parcel search — county, block and plot</option>
+      </select>
+    </label>
+    <div class="search-fields">
+      <label>Volume<input name="volume" placeholder="Volume"></label>
+      <label>Folio<input name="folio" placeholder="Folio"></label>
+      <label>County<input name="county" placeholder="County"></label>
+      <label>Block<input name="block" placeholder="Block"></label>
+      <label>Plot<input name="plot" placeholder="Plot"></label>
+    </div>
+    <button class="button">Prepare search</button>
+  </form>
+  {% if search %}
+  <section class="card search-confirmation">
+    <p class="eyebrow">SEARCH READY</p>
+    <h2>{{ search.search_reference }}</h2>
+    <p>Your {{ search.search_type|lower }} search details were saved.</p>
+  </section>
+  {% endif %}
+</div>
+{% endblock %}

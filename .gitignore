@@ -1,0 +1,10 @@
+__pycache__/
+.pytest_cache/
+.venv/
+*.py[cod]
+land_records.sqlite3
+private_uploads/
+.env
+01_land_sale_original.txt
+03_title_deed_original.pdf
+05_second_title_deed.pdf

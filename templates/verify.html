@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Verify record | LandVerify{% endblock %}
+{% block content %}
+<div class="narrow wide"><p class="eyebrow">CHECK YOUR DOCUMENT</p><h1>Check your document</h1><p class="muted">Upload a file to see if it matches a registered record. Record number is optional.</p>
+<form method="post" enctype="multipart/form-data" class="card form">
+<input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+<label>Record number (optional)<input name="reference" placeholder="UG-REC-XXXXXXXXXXXX"></label>
+<label>Document <span class="required-label">(required)</span><input name="document" type="file" accept=".pdf,.png,.jpg,.jpeg,.txt" required></label>
+<button class="button">Check document</button>
+</form>
+{% if result %}
+<section class="result card {% if result == 'HASH_MATCH' %}positive{% elif result in ['HASH_MISMATCH','DOCUMENT_NOT_AUTHENTICATED','RECORD_NOT_FOUND','INVALID_DOCUMENT'] %}negative{% endif %}">
+<p class="eyebrow">RESULT</p>
+{% if result == 'HASH_MATCH' %}<div class="result-icon" aria-hidden="true">✓</div><h2>REAL DOCUMENT</h2><p>This document matches the saved copy.</p>{% elif result == 'HASH_MISMATCH' or result == 'DOCUMENT_NOT_AUTHENTICATED' %}<div class="result-icon" aria-hidden="true">✕</div><h2>FAKE DOCUMENT</h2><p>This document does not match the saved copy.</p>{% elif result == 'DOCUMENT_REQUIRED' %}<h2>DOCUMENT REQUIRED</h2><p>Please choose a document to check.</p>{% elif result == 'RECORD_NOT_FOUND' %}<h2>RECORD NOT FOUND</h2><p>Check the record number and try again.</p>{% elif result == 'INVALID_DOCUMENT' %}<h2>FILE NOT SUPPORTED</h2><p>Upload a PDF, PNG, JPG, JPEG, or TXT file.</p>{% else %}<h2>{{ result|replace('_', ' ') }}</h2><p>This record is currently <strong>{{ result|replace('_', ' ') }}</strong>.</p>{% endif %}
+{% if record %}<p class="muted">Record: {{ record.public_reference }} · Status: {{ record.status|replace('_', ' ') }}</p>{% endif %}
+</section>
+{% endif %}
+</div>
+{% endblock %}

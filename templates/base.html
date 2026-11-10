@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}LandVerify{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="{% if current_user %}app-auth{% else %}app-guest{% endif %}">
+  {% set page_content %}{% block content %}{% endblock %}{% endset %}
+  {% if current_user %}
+    <div class="app-shell">
+      <aside class="side-nav">
+        <a class="brand" href="{{ url_for('home') }}">Land<span>Verify</span></a>
+        <nav class="side-links">
+          <a href="{{ url_for('help_page') }}">Get help</a>
+            <a href="{{ url_for('pricing') }}">Plans</a>
+          <a href="{{ url_for('dashboard') }}">My records</a>
+          <a href="{{ url_for('verify') }}">Check your document</a>
+          <a href="{{ url_for('land_search') }}">Search land</a>
+          {% if current_user.role == 'submitter' %}<a href="{{ url_for('register_record') }}">Add a record</a>{% endif %}
+          {% if current_user.role == 'administrator' %}<a href="{{ url_for('admin') }}">Manage users</a>{% endif %}
+        </nav>
+        <form method="post" action="{{ url_for('logout') }}" class="signout-form">
+          <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+          <button class="signout-link">Sign out</button>
+        </form>
+      </aside>
+      <div class="main-panel">
+        <header class="top-bar">
+          <div>
+            <p class="eyebrow">LANDVERIFY</p>
+            <h2>Document checking</h2>
+          </div>
+          <div class="user-chip">{{ current_user.username }}</div>
+        </header>
+        <main class="container">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}
+          {% endwith %}
+          {{ page_content|safe }}
+        </main>
+      </div>
+    </div>
+  {% else %}
+    <header class="site-header">
+      <a class="brand" href="{{ url_for('home') }}">Land<span>Verify</span></a>
+      <nav class="top-links">
+        <a href="{{ url_for('verify') }}">Verify</a>
+        <a href="{{ url_for('pricing') }}">Plans</a>
+        <a href="{{ url_for('help_page') }}">Get help</a>
+        <a class="nav-login" href="{{ url_for('login') }}">Sign in</a>
+      </nav>
+    </header>
+    <main class="container">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}
+      {% endwith %}
+      {{ page_content|safe }}
+    </main>
+  {% endif %}
+  <footer>LandVerify checks whether a document matches a saved copy.</footer>
+</body>
+</html>

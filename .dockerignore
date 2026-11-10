@@ -1,0 +1,8 @@
+.git
+.venv
+__pycache__
+.pytest_cache
+land_records.sqlite3
+private_uploads
+.env
+tests

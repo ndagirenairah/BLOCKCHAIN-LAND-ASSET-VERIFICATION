@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Sign in | LandVerify{% endblock %}
+{% block content %}
+<div class="narrow"><p class="eyebrow">SECURE ACCESS</p><h1>Sign in</h1><p class="muted">Use an account provisioned by your organization.</p>
+  <form method="post" class="card form">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+    <label>Username<input name="username" required autocomplete="username"></label>
+    <label>Password<input name="password" type="password" required autocomplete="current-password"></label>
+    <button class="button">Sign in</button>
+  </form>
+  <p class="muted account-prompt">Need an account? <a href="{{ url_for('register_account') }}">Create a submitter account</a></p>
+</div>
+{% endblock %}

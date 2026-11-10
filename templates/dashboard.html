@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | LandVerify{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">YOUR WORKSPACE</p><h1>My records</h1></div>{% if current_user.role == 'submitter' %}<a class="button" href="{{ url_for('register_record') }}">+ Add a record</a>{% endif %}</div>
+{% if records %}
+<div class="table-wrap"><table><thead><tr><th>Reference</th><th>Asset / area</th><th>Status</th><th>Created</th><th></th></tr></thead><tbody>
+{% for record in records %}<tr><td><strong>{{ record.public_reference }}</strong></td><td>{{ record.asset_type }} · {{ record.area_label }}</td><td><span class="status {{ record.status|lower }}">{{ record.status|replace('_', ' ') }}</span></td><td>{{ record.created_at[:10] }}</td><td><a href="{{ url_for('record_view', record_id=record.id) }}">View</a></td></tr>{% endfor %}
+</tbody></table></div>
+{% else %}<div class="empty card"><h3>No records yet</h3><p>Add a document to get started.</p></div>{% endif %}
+{% endblock %}

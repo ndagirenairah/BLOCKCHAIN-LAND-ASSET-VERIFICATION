@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>{{ record.public_reference }} evidence report</title><style>body{font:16px Arial,sans-serif;max-width:800px;margin:40px auto;color:#172033}h1{color:#174a7c}dt{font-weight:bold;margin-top:12px}dd{margin:2px 0 0}</style></head>
+<body>
+<h1>LandVerify evidence report</h1>
+<p>This report records an application-level document check. It is not proof of legal ownership or official government authenticity.</p>
+<dl>
+<dt>Record reference</dt><dd>{{ record.public_reference }}</dd>
+<dt>Asset type</dt><dd>{{ record.asset_type }}</dd>
+<dt>Area</dt><dd>{{ record.area_label }}</dd>
+<dt>Status</dt><dd>{{ record.status|replace('_', ' ') }}</dd>
+<dt>District</dt><dd>{{ record.district or 'Not provided' }}</dd>
+<dt>County</dt><dd>{{ record.county or 'Not provided' }}</dd>
+<dt>Block / plot</dt><dd>{{ record.block or '—' }} / {{ record.plot or '—' }}</dd>
+<dt>Tenure</dt><dd>{{ record.tenure or 'Not provided' }}</dd>
+<dt>Title volume / folio</dt><dd>{{ record.title_volume or '—' }} / {{ record.title_folio or '—' }}</dd>
+<dt>Registration number</dt><dd>{{ record.registration_number or '—' }}</dd>
+<dt>Registered file fingerprint</dt><dd>{{ record.file_hash }}</dd>
+<dt>Created</dt><dd>{{ record.created_at }}</dd>
+</dl>
+<h2>Recorded events</h2>
+<ul>{% for event in events %}<li>{{ event.event_time }} — {{ event.event_type }}{% if event.reason %}: {{ event.reason }}{% endif %}{% if event.tx_hash %} — proof reference {{ event.tx_hash }}{% endif %}</li>{% endfor %}</ul>
+</body>
+</html>

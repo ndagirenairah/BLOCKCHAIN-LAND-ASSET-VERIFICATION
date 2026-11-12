@@ -6,6 +6,8 @@
 <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
 <label>Document type<input name="asset_type" placeholder="e.g. Land" required></label>
 <label>Location<input name="area_label" placeholder="e.g. Kampala" required></label>
+<fieldset><legend>Land details (for land records)</legend><div class="detail-grid"><label>District<input name="district" placeholder="District"></label><label>County<input name="county" placeholder="County"></label><label>Block<input name="block" placeholder="Block"></label><label>Plot<input name="plot" placeholder="Plot"></label><label>Tenure<input name="tenure" placeholder="Freehold, leasehold, or mailo"></label><label>Title volume<input name="title_volume" placeholder="Volume"></label><label>Title folio<input name="title_folio" placeholder="Folio"></label></div></fieldset>
+<fieldset><legend>Vehicle details (for logbooks)</legend><div class="detail-grid"><label>Registration number<input name="registration_number" placeholder="Registration number"></label><label>Chassis/VIN<input name="chassis_number" placeholder="Chassis or VIN"></label><label>Engine number<input name="engine_number" placeholder="Engine number"></label></div></fieldset>
 <label>Document file (up to 10 MB)<input name="document" type="file" accept=".pdf,.png,.jpg,.jpeg,.txt" required></label>
 <button class="button">Save document</button>
 </form></div>

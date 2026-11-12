@@ -54,6 +54,8 @@ h3{margin-top:8px}
 .wide{max-width:840px}
 .muted{color:var(--muted)}
 .form{display:grid;gap:16px;margin-top:20px}
+fieldset{border:1px solid #324a6d;border-radius:8px;padding:16px;display:grid;gap:14px}
+legend{padding:0 6px;color:#b9cce9;font-weight:700}
 label{display:grid;gap:7px;font-weight:700;color:#d5e3f9}
 input,textarea{font:inherit;padding:11px 12px;border:1px solid #324a6d;border-radius:8px;background:#0f1a2b;color:var(--text)}
 select{font:inherit;padding:11px 12px;border:1px solid #324a6d;border-radius:8px;background:#0f1a2b;color:var(--text)}

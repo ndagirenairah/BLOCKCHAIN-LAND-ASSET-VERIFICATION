@@ -36,6 +36,9 @@ templates/             Jinja pages
 static/style.css       Responsive dark dashboard UI
 static/landscape.jpg   Locally stored land background photograph
 tests/test_app.py      Automated workflow tests
+NEXT_STEPS.md          Prioritized roadmap to pilot and production
+PRESENTATION.md        Panel presentation, demo script, and Q&A
+PROJECT_ALIGNMENT.md   Title audit, completed functions, and remaining gaps
 requirements.txt       Python dependencies
 .env.example           Environment variable example
 ```
@@ -78,7 +81,7 @@ Do not use the example values for a real deployment. Create additional users thr
 
 People can create their own submitter accounts at <http://127.0.0.1:8000/register>. Self-registration never grants reviewer, verifier, or administrator access. Those roles remain administrator-provisioned.
 
-The current Docker configuration sets `AUTO_APPROVE_RECORDS=true`, so a successful registration is immediately marked `APPROVED` and receives an explicit `AUTO_APPROVED` audit event and proof reference. For deployments requiring human review, set `AUTO_APPROVE_RECORDS=false` before starting the app.
+The current Docker configuration sets `AUTO_APPROVE_RECORDS=false`, so new records remain pending until an authorized reviewer approves them. Automatic approval is available only when an operator explicitly sets `AUTO_APPROVE_RECORDS=true` and accepts that risk.
 
 ## Docker deployment
 

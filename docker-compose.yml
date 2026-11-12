@@ -23,7 +23,7 @@ services:
       UPLOAD_DIR: /app/private_uploads
       HOST: 0.0.0.0
       PORT: 8000
-      AUTO_APPROVE_RECORDS: ${AUTO_APPROVE_RECORDS:-true}
+      AUTO_APPROVE_RECORDS: ${AUTO_APPROVE_RECORDS:-false}
     ports:
       - "127.0.0.1:8000:8000"
     volumes:

@@ -15,6 +15,7 @@ from flask import (
     g,
     redirect,
     render_template,
+    make_response,
     request,
     session,
     url_for,
@@ -130,6 +131,16 @@ def init_db():
             file_hash TEXT NOT NULL,
             status TEXT NOT NULL DEFAULT 'PENDING_REVIEW',
             review_reason TEXT,
+            district TEXT,
+            county TEXT,
+            block TEXT,
+            plot TEXT,
+            tenure TEXT,
+            title_volume TEXT,
+            title_folio TEXT,
+            registration_number TEXT,
+            chassis_number TEXT,
+            engine_number TEXT,
             created_at TEXT NOT NULL
         );
         CREATE TABLE IF NOT EXISTS record_events (
@@ -207,6 +218,21 @@ def init_db():
         db.execute("ALTER TABLE security_audit_logs ADD COLUMN previous_hash TEXT")
     if "entry_hash" not in columns:
         db.execute("ALTER TABLE security_audit_logs ADD COLUMN entry_hash TEXT")
+    if USING_POSTGRES:
+        record_columns = {
+            row["column_name"]
+            for row in db.execute(
+                "SELECT column_name FROM information_schema.columns WHERE table_name = 'records'"
+            ).fetchall()
+        }
+    else:
+        record_columns = {row["name"] for row in db.execute("PRAGMA table_info(records)")}
+    for column in (
+        "district", "county", "block", "plot", "tenure", "title_volume",
+        "title_folio", "registration_number", "chassis_number", "engine_number",
+    ):
+        if column not in record_columns:
+            db.execute(f"ALTER TABLE records ADD COLUMN {column} TEXT")
     db.commit()
     if USING_POSTGRES:
         db.execute("SELECT pg_advisory_unlock(824617203)")
@@ -596,9 +622,30 @@ def register_record():
     if request.method == "POST":
         asset_type = request.form.get("asset_type", "").strip()
         area_label = request.form.get("area_label", "").strip()
+        asset_fields = {
+            "district": request.form.get("district", "").strip() or None,
+            "county": request.form.get("county", "").strip() or None,
+            "block": request.form.get("block", "").strip() or None,
+            "plot": request.form.get("plot", "").strip() or None,
+            "tenure": request.form.get("tenure", "").strip() or None,
+            "title_volume": request.form.get("title_volume", "").strip() or None,
+            "title_folio": request.form.get("title_folio", "").strip() or None,
+            "registration_number": request.form.get("registration_number", "").strip() or None,
+            "chassis_number": request.form.get("chassis_number", "").strip() or None,
+            "engine_number": request.form.get("engine_number", "").strip() or None,
+        }
         uploaded = request.files.get("document")
         if not asset_type or not area_label or not uploaded or not uploaded.filename:
             flash("Asset type, area label, and a document are required.", "danger")
+            return render_template("register.html")
+        asset_type_key = asset_type.lower()
+        if asset_type_key in {"land", "land title", "title"} and (
+            not asset_fields["district"] or not asset_fields["tenure"]
+        ):
+            flash("Land records require a district and tenure.", "danger")
+            return render_template("register.html")
+        if asset_type_key in {"vehicle", "vehicle logbook", "logbook"} and not asset_fields["registration_number"]:
+            flash("Vehicle records require a registration number.", "danger")
             return render_template("register.html")
         if not allowed_file(uploaded.filename) or not valid_upload(uploaded):
             flash("Unsupported file type. Use PDF, PNG, JPG, JPEG, or TXT.", "danger")
@@ -614,10 +661,19 @@ def register_record():
         try:
             db.execute(
                 """
-                INSERT INTO records (public_reference, asset_type, area_label, submitter_id, file_storage_key, file_hash, status, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO records
+                (public_reference, asset_type, area_label, submitter_id, file_storage_key, file_hash, status,
+                 district, county, block, plot, tenure, title_volume, title_folio,
+                 registration_number, chassis_number, engine_number, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
-                (reference, asset_type, area_label, g.user["id"], storage_key, digest, record_status, utc_now()),
+                (
+                    reference, asset_type, area_label, g.user["id"], storage_key, digest, record_status,
+                    asset_fields["district"], asset_fields["county"], asset_fields["block"],
+                    asset_fields["plot"], asset_fields["tenure"], asset_fields["title_volume"],
+                    asset_fields["title_folio"], asset_fields["registration_number"],
+                    asset_fields["chassis_number"], asset_fields["engine_number"], utc_now(),
+                ),
             )
             record_id = db.execute("SELECT id FROM records WHERE public_reference = ?", (reference,)).fetchone()["id"]
             db.execute(
@@ -657,6 +713,25 @@ def record_view(record_id):
         flash("You cannot access that record.", "danger")
         return redirect(url_for("dashboard"))
     return render_template("record.html", record=record, events=events)
+
+
+@app.route("/records/<int:record_id>/report")
+@login_required
+def record_report(record_id):
+    record, events = record_details(record_id)
+    if record is None:
+        flash("Record not found.", "danger")
+        return redirect(url_for("dashboard"))
+    if g.user["role"] == "submitter" and record["submitter_id"] != g.user["id"]:
+        audit("record_report", "record", record_id, "denied")
+        flash("You cannot access that record.", "danger")
+        return redirect(url_for("dashboard"))
+    rendered = render_template("report.html", record=record, events=events)
+    response = make_response(rendered)
+    response.headers["Content-Disposition"] = f'attachment; filename="{record["public_reference"]}-report.html"'
+    response.headers["Content-Type"] = "text/html; charset=utf-8"
+    audit("record_report", "record", record_id)
+    return response
 
 
 @app.route("/verify", methods=("GET", "POST"))

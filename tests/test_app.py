@@ -113,6 +113,37 @@ def test_first_time_help_page_is_public_and_plain_language(client):
     assert b"Check your document" in response.data
 
 
+def test_land_registration_stores_structured_fields_and_report(client):
+    login(client, "submitter", "submit-pass")
+    response = client.post(
+        "/records/new",
+        data={
+            "_csrf_token": csrf_token(client, "/records/new"),
+            "asset_type": "Land",
+            "area_label": "Kampala",
+            "district": "Kampala",
+            "county": "Kampala Central",
+            "block": "12",
+            "plot": "45",
+            "tenure": "Freehold",
+            "title_volume": "KLA",
+            "title_folio": "123",
+            "document": (io.BytesIO(b"land document"), "land.txt"),
+        },
+        content_type="multipart/form-data",
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+    with client.application.app_context():
+        record = get_db().execute("SELECT id, district, plot FROM records").fetchone()
+    assert record["district"] == "Kampala"
+    assert record["plot"] == "45"
+    report = client.get(f"/records/{record['id']}/report")
+    assert report.status_code == 200
+    assert b"LandVerify evidence report" in report.data
+    assert b"Content-Disposition" not in report.data
+
+
 def test_registration_can_auto_approve(client):
     client.application.config["AUTO_APPROVE_RECORDS"] = True
     login(client, "submitter", "submit-pass")
